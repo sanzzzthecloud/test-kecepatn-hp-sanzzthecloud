@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>LEVEL NERAKA</title>
+
+<style>
+html, body {
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
+    touch-action: none;
+    font-family: monospace;
+}
+
+body {
+    background: linear-gradient(180deg, #000000, #002200, #330000);
+    animation: bgMove 10s infinite alternate;
+}
+
+@keyframes bgMove {
+    0% { background-position: top; }
+    100% { background-position: bottom; }
+}
+
+.terminal {
+    position: fixed;
+    inset: 0;
+    color: rgba(0,255,0,0.25);
+    font-size: 14px;
+    padding: 10px;
+    z-index: 0;
+    white-space: pre-wrap;
+}
+
+.gift {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150px;
+    height: 125px;
+    background: linear-gradient(145deg, #8b0000, #ff0000);
+    box-shadow: 0 20px 40px black;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.6s;
+    z-index: 5;
+}
+
+.gift::before {
+    content: "";
+    position: absolute;
+    width: 30px;
+    height: 100%;
+    background: linear-gradient(#ffd700, #ff9900);
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.gift::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 30px;
+    background: linear-gradient(#ffd700, #ff9900);
+    top: 48px;
+}
+
+.lid {
+    position: absolute;
+    width: 170px;
+    height: 32px;
+    background: linear-gradient(145deg, #550000, #ff3333);
+    top: -32px;
+    left: -10px;
+    border-radius: 8px;
+}
+
+.hack-text {
+    position: absolute;
+    font-size: 78px;
+    font-weight: 900;
+    white-space: nowrap;
+    z-index: 10;
+    background: linear-gradient(to bottom, #000, #4b0000, #8b0000, #ff0000);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 20px rgba(255,0,0,0.9);
+}
+
+.hack-text::after {
+    content: "🩸🩸";
+    position: absolute;
+    left: 10px;
+    top: 70px;
+    animation: drip 2s infinite;
+}
+
+@keyframes drip {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(60px); opacity: 0; }
+}
+
+.spark {
+    position: absolute;
+    font-size: 40px;
+    font-weight: bold;
+    color: #00ff00;
+    z-index: 2;
+    animation: fall linear forwards;
+}
+
+@keyframes fall {
+    from { top: -80px; opacity: 1; }
+    to { top: 130vh; opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="terminal" id="terminal"></div>
+
+<div class="gift" id="gift">
+    <div class="lid"></div>
+</div>
+
+<!-- AUDIO -->
+<audio id="bgSound" loop>
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_0b9c6dbd38.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="glitchSound">
+    <source src="https://cdn.pixabay.com/download/audio/2022/02/23/audio_4c7a8c6f7a.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const gift = document.getElementById("gift");
+const terminal = document.getElementById("terminal");
+const bgSound = document.getElementById("bgSound");
+const glitchSound = document.getElementById("glitchSound");
+
+let sparkInterval, hackInterval, termInterval;
+
+function goFullScreen() {
+    const el = document.documentElement;
+    if (el.requestFullscreen) el.requestFullscreen();
+    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+}
+
+gift.onclick = () => {
+
+    goFullScreen();
+
+    bgSound.volume = 0.6;
+    bgSound.play();
+
+    glitchSound.volume = 0.8;
+    glitchSound.play();
+
+    gift.style.transform = "translate(-50%, -50%) scale(0)";
+    gift.style.opacity = "0";
+
+    termInterval = setInterval(() => {
+        terminal.textContent +=
+            "[ACCESS] root@system\n" +
+            "[ERROR] firewall breached\n" +
+            "[UPLOAD] payload.exe\n";
+        terminal.scrollTop = terminal.scrollHeight;
+    }, 120);
+
+    hackInterval = setInterval(() => {
+        const text = document.createElement("div");
+        text.className = "hack-text";
+        text.innerText = "ANDA DI HACK";
+        text.style.left = Math.random() * window.innerWidth + "px";
+        text.style.top = Math.random() * window.innerHeight + "px";
+        document.body.appendChild(text);
+        setTimeout(() => text.remove(), 6000);
+
+        glitchSound.currentTime = 0;
+        glitchSound.play();
+    }, 800);
+
+    sparkInterval = setInterval(() => {
+        for (let i = 0; i < 25; i++) {
+            const s = document.createElement("div");
+            s.className = "spark";
+            s.innerText = "1x1x1";
+            s.style.left = Math.random() * window.innerWidth + "px";
+            s.style.animationDuration = (Math.random() * 0.4 + 0.25) + "s";
+            document.body.appendChild(s);
+            setTimeout(() => s.remove(), 900);
+        }
+    }, 100);
+
+    setTimeout(() => {
+        clearInterval(sparkInterval);
+        clearInterval(hackInterval);
+        clearInterval(termInterval);
+        bgSound.pause();
+    }, 60000);
+};
+</script>
+
+</body>
+</html>
